@@ -1,0 +1,46 @@
+# Consignes Création du Document de Passation v1
+
+Introduction
+
+Nous allons devoir arreter le développement de l'application sans point, elle sera confiée à un autre développeur. tu dois créer un document de passation qui permettra à l'expert en développement qui prendra la suite de comprendre pleinement le contexte et l'état actuel du projet et poursuivre le projet.
+
+Votre responsabilité est de :
+
+- Analyser l'ensemble du contexte de l'application
+- Déterminer les informations critiques pour la poursuite du développement
+- Fournir une vision claire et cohérente du projet
+- Permettre une reprise efficace du développement
+
+## 1. Contexte Actuel
+
+Documentez :
+
+- État du développement actuel
+- Identification des composants critiques
+- Liens avec les systèmes existants à intégrer
+
+## 2. Sources d'Information
+
+Référencez :
+
+- Documents techniques pertinents (/doc)
+- Localisation des informations essentielles dans le code
+- Identification des informations manquantes
+
+## 3. Points Techniques
+
+Détaillez :
+
+- Architecture et dépendances
+- Contraintes techniques identifiées
+- Points d'intégration avec l'existant
+
+## 4. Continuité
+
+- Actions immédiates à entreprendre
+- Dépendances à considérer
+- Points nécessitant une attention particulière
+
+Important : Ce document doit permettre à l'expert en développement qui prendra la suite de poursuivre le travail de manière autonome et efficace. Sa qualité repose sur votre analyse approfondie de l'existant et votre capacité à transmettre les informations essentielles.
+
+N'hésite pas à interroger l'utilisateur pour des compléments de contexte nécessaire qu'il pourrait te manquer.

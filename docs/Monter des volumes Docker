@@ -1,0 +1,122 @@
+C'est une excellente question, et c'est un point crucial pour comprendre comment travailler efficacement avec Docker en développement. Ne t'inquiète pas, je vais tout t'expliquer de manière claire et détaillée. 😊
+
+---
+
+### **1. Comment développer dans un conteneur Docker ?**
+
+Quand on développe dans un conteneur Docker, l'objectif est de **travailler directement dans le conteneur** tout en ayant accès aux fichiers locaux sur ton Mac. Pour cela, on utilise une fonctionnalité clé de Docker : **les volumes montés**.
+
+#### **a. Monter des volumes pour le développement**
+- Un volume monté permet de **partager un répertoire entre ton Mac et le conteneur**.
+- Cela signifie que tu peux éditer les fichiers sur ton Mac (avec ton IDE préféré, comme VS Code), et les modifications seront **automatiquement reflétées dans le conteneur**.
+- Inversement, si des fichiers sont modifiés dans le conteneur, les modifications seront également visibles sur ton Mac.
+
+#### **b. Exemple de montage de volume**
+- Supposons que tu as un projet avec ce structure :
+  ```
+  /Users/gauthierhavet/mon-projet
+  ├── Dockerfile
+  ├── docker-compose.yml
+  └── src
+      └── index.js
+  ```
+- Pour monter le dossier `src` dans le conteneur, tu peux utiliser `docker run` ou `docker-compose`.
+
+**Avec `docker run`** :
+```bash
+docker run -v /Users/gauthierhavet/mon-projet/src:/app/src mon-image
+```
+- Ici, le dossier `src` sur ton Mac est monté dans le conteneur au chemin `/app/src`.
+
+**Avec `docker-compose.yml`** :
+```yaml
+version: "3.8"
+services:
+  mon-service:
+    image: mon-image
+    volumes:
+      - ./src:/app/src
+```
+- Ici, le dossier `src` est monté dans le conteneur au chemin `/app/src`.
+
+---
+
+### **2. Les mises à jour sont-elles synchronisées ?**
+
+Oui, **les mises à jour sont synchronisées en temps réel** grâce aux volumes montés :
+- Si tu modifies un fichier sur ton Mac (par exemple, `src/index.js`), la modification est immédiatement visible dans le conteneur.
+- Si un fichier est modifié dans le conteneur (par exemple, un script génère un fichier dans `/app/src`), la modification est immédiatement visible sur ton Mac.
+
+Cela permet de **développer en temps réel** sans avoir à copier manuellement les fichiers.
+
+---
+
+### **3. Pourquoi utiliser des volumes montés pour le développement ?**
+
+#### **a. Avantages**
+- **Édition locale** : Tu peux utiliser ton IDE préféré sur ton Mac pour éditer les fichiers.
+- **Exécution dans le conteneur** : Le code s'exécute dans un environnement isolé et reproductible (le conteneur).
+- **Synchronisation automatique** : Pas besoin de copier manuellement les fichiers, tout est synchronisé en temps réel.
+- **Débogage facile** : Tu peux voir les logs et les erreurs directement dans le conteneur.
+
+#### **b. Inconvénients (mineurs)**
+- **Performances** : Sur macOS, les volumes montés peuvent être un peu lents en raison de la couche de virtualisation. Pour améliorer les performances, utilise `:delegated` ou `:cached` (voir plus bas).
+
+---
+
+### **4. Comment optimiser les volumes montés sur macOS ?**
+
+Sur macOS, Docker utilise une VM Linux (via HyperKit) pour exécuter les conteneurs. Les volumes montés passent par une couche de virtualisation, ce qui peut ralentir les performances. Pour améliorer cela, tu peux utiliser les options `:delegated` ou `:cached`.
+
+#### **a. Utiliser `:delegated`**
+- L'option `:delegated` signifie que les écritures sur le volume sont **déléguées au conteneur**. Cela améliore les performances, mais les modifications peuvent ne pas être immédiatement visibles sur ton Mac.
+- Exemple :
+  ```bash
+  docker run -v /Users/gauthierhavet/mon-projet/src:/app/src:delegated mon-image
+  ```
+
+#### **b. Utiliser `:cached`**
+- L'option `:cached` signifie que les lectures et écritures sont **mises en cache**. Cela améliore les performances tout en gardant une synchronisation presque en temps réel.
+- Exemple :
+  ```bash
+  docker run -v /Users/gauthierhavet/mon-projet/src:/app/src:cached mon-image
+  ```
+
+---
+
+### **5. Workflow typique pour développer dans un conteneur**
+
+1. **Monter les volumes** :
+   - Utilise `docker-compose.yml` ou `docker run` pour monter les répertoires locaux dans le conteneur.
+
+2. **Éditer les fichiers localement** :
+   - Ouvre ton projet dans ton IDE (VS Code, IntelliJ, etc.) sur ton Mac.
+   - Modifie les fichiers dans le dossier monté (par exemple, `src/index.js`).
+
+3. **Exécuter le code dans le conteneur** :
+   - Utilise `docker-compose up` ou `docker run` pour lancer le conteneur.
+   - Le code s'exécute dans le conteneur, et les modifications sont synchronisées en temps réel.
+
+4. **Déboguer et tester** :
+   - Utilise les logs du conteneur pour déboguer (`docker logs <container_id>`).
+   - Si nécessaire, ouvre un shell dans le conteneur pour explorer les fichiers (`docker exec -it <container_id> /bin/bash`).
+
+---
+
+### **6. Exemple concret avec VS Code**
+
+Si tu utilises **VS Code**, tu peux profiter de l'extension **Remote - Containers** pour développer directement dans un conteneur :
+1. Installe l'extension "Remote - Containers" dans VS Code.
+2. Ouvre ton projet dans VS Code.
+3. Clique sur l'icône en bas à gauche et sélectionne "Reopen in Container".
+4. VS Code va construire et lancer le conteneur, et tu pourras éditer et exécuter ton code directement dans le conteneur.
+
+---
+
+### **Résumé**
+- Pour développer dans un conteneur, utilise des **volumes montés** pour synchroniser les fichiers entre ton Mac et le conteneur.
+- Les modifications sont **automatiquement synchronisées** dans les deux sens.
+- Utilise `:delegated` ou `:cached` pour améliorer les performances sur macOS.
+- Avec VS Code, l'extension "Remote - Containers" simplifie encore plus le développement dans un conteneur.
+
+Si tu as encore des questions ou besoin d'aide pour configurer ton environnement, n'hésite pas à demander ! 😊

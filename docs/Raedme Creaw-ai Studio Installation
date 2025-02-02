@@ -1,0 +1,46 @@
+# CrewAI Studio
+Welcome to CrewAI Studio! This application provides a user-friendly interface written in Streamlit for interacting with CrewAI, suitable even for those who don't want to write any code. Follow the steps below to install and run the application on Windows or Linux (probably also MacOS) using either Conda or a virtual environment.
+
+Features
+Multi-platform support: Works on Windows, Linux and MacOS.
+No coding required: User-friendly interface for interacting with CrewAI.
+Conda and virtual environment support: Choose between Conda and a Python virtual environment for installation.
+CrewAI tools: You can use crewai tools to interact with the real world. Crewai studio uses a forked version of crewAI-tools⁠ with some bugfixes and enhancements (bugfixes are already merged to crewai-tools).
+*NEW* Custom Tools: Custom tools for calling APIs and for writing files. More will be added soon.
+API support: Currently OpenAI, Groq, Anthropic and LM Studio backends are supported. OpenAI key is probably still needed for embeddings in many tools. Don't forget to load an embedding model when using LM Studio.
+Single Page app export: Feature to export crew as a simple single-page Streamlit app (doesn't support custom tools yet).
+Threaded crew run: Crews can run in the background and can be stopped.
+Roadmap
+Better import/export
+Human input
+Chat
+Automatic creation of crews
+Add more LLM backends
+Add more custom tools
+Multiuser environment
+source: https://github.com/strnad/CrewAI-Studio/blob/main/README.md⁠
+
+Docker Commands to Run the Container
+Run Docker Container:
+docker run -p 8501:8501 -v /CrewAi-Studio:/app tham0nk/crewai-studio
+-p 8501:8501 maps the container's port 8501 to your local machine's port 8501.
+
+-v /CrewAi-Studio:/app mounts the /CrewAi-Studio directory to the container’s /app directory.
+
+Updated Docker-Compose File
+You can update the docker-compose.yml file to pull and run the existing image from your repository:
+
+version: '3'
+services:
+  crewai-studio:
+    image: tham0nk/crewai-studio
+    ports:
+      - "8501:8501"
+    volumes:
+      - /CrewAi-Studio:/app
+Docker Compose Commands
+Start the Container with Docker Compose:
+docker-compose up
+Stop the Container:
+docker-compose down
+This setup will pull your pre-built Docker image from the repository and run it with the specified port and volume mappings.

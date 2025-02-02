@@ -1,0 +1,47 @@
+Connect your app to Phoenix
+To collect traces from your application, you must configure an OpenTelemetry TracerProvider to send traces to Phoenix. The register utility from the phoenix.otel module streamlines this process.
+
+Copy
+pip install arize-phoenix
+Connect your application to your cloud instance using:
+
+Copy
+import os
+from phoenix.otel import register
+
+# Add Phoenix API Key for tracing
+PHOENIX_API_KEY = "ADD YOUR API KEY"
+os.environ["PHOENIX_CLIENT_HEADERS"] = f"api_key={PHOENIX_API_KEY}"
+os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "https://app.phoenix.arize.com"
+
+# configure the Phoenix tracer
+tracer_provider = register() 
+Your app is now connected to Phoenix! Any OpenTelemetry traces you generate will be sent to your Phoenix instance.
+
+Instrument your app and trace a request
+Let's generate some of those traces now. We'll use OpenAI in this example, but Phoenix has dozens of other integrations to choose from as well.
+
+First we'll import our instrumentor and the OpenAI package:
+
+Copy
+pip install openinference-instrumentation-openai openai
+Then enable our OpenAI integration:
+
+Copy
+from openinference.instrumentation.openai import OpenAIInstrumentor
+
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+And finally send a request to OpenAI:
+
+Copy
+import openai
+import os
+
+os.environ["OPENAI_API_KEY"] = "YOUR OPENAI API KEY"
+
+client = openai.OpenAI()
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Write a haiku."}],
+)
+print(response.choices[0].message.content)

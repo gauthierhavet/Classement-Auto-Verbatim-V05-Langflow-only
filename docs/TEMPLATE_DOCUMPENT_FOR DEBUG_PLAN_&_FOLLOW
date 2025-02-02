@@ -1,0 +1,317 @@
+
+-----------------------------------
+█▀▀ █░█ █ █▀▄ █▀▀   ▀█▀ █▀▀ █▀▄▀█ █▀█ █░░ ▄▀█ ▀█▀ █▀▀
+█▄█ █▄█ █ █▄▀ ██▄   ░█░ ██▄ █░▀░█ █▀▀ █▄▄ █▀█ ░█░ ██▄
+-----------------------------------
+
+# Guide Méthodologique de Debug
+
+le contenu de ce doceument est la mise en application d'une methodologie de debug illustrée si dessous.
+Cette méthodologie sera a appliquer systématiquement en cas de demande de debug.
+Elle devra s'appuyer systématiquement sur un fichier template donc la constitution est détaillée dans ce document, afin de permettre le suivi des bugs et la passation éventuelle entre plusieurs opérateurs.
+
+Une fois un tempête initié pour un debug spécifique, Il devra être utilisé, mise à jour régulièrement et documenté afin de poursuivre le debug jusqu'à son terme par l'opérateur en charge. Si c'est toi qui charge du debug, Ça fera partie de ta mission.
+
+
+🎯 Objectif du Template
+Ce guide définit une structure standardisée pour le suivi et la documentation des investigations de debug. Il permet d'assurer une traçabilité complète et facilite la transmission du contexte entre différents intervenants.
+
+Ce template standardise l'approche de debug pour:
+- Assurer une traçabilité complète des investigations
+- Permettre la transmission du contexte entre développeurs
+- Faciliter l'identification des patterns de bugs récurrents
+- Documenter les solutions pour référence future
+
+## 1. Structure Générale
+
+### 1.1 En-tête
+```
+# 🔍 DEBUG #[ID]
+
+┌──────┬────────────────────────────────────┬──────┬──────────────┐
+│ ID   │ PROBLÈME INITIAL                   │ État │ Résolution   │
+├──────┼────────────────────────────────────┼──────┼──────────────┤
+│ Pxxx │ Description concise du problème    │ État │ X/Y étapes   │
+└──────┴────────────────────────────────────┴──────┴──────────────┘
+```
+
+**Règles de remplissage:**
+- ID : Format Pxxx (P pour Problème, xxx numéro unique)
+- Description : Une ou deux lignes maximum, doit être claire et précise
+- État : Un des états standards [TODO|WIP|DONE|STOP|SKIP]
+- Résolution : Indicateur de progression global (ex: "2/4 étapes")
+
+### 1.2 Documents et Résumé
+```
+DOCUMENTS ASSOCIÉS
+• Liste des documents pertinents avec chemins/références
+
+RÉSUMÉ SITUATION
+• Points clés de la situation actuelle
+• État des investigations
+• Progrès notable
+```
+
+**Règles de remplissage:**
+- Documents : Chemins d'accès complets, URLs, références précises
+- Résumé : 3-4 points maximum, focus sur l'essentiel
+- Pas de temporalité, focus sur les faits
+
+### 1.3 Structure d'une Hypothèse
+```
+🔴|🟡|🟢
+┌──────┬────────────────────────────────────┬──────┐
+│ ID   │ HYPOTHÈSE #N: TITRE                │ État │
+├──────┼────────────────────────────────────┼──────┤
+│ Hx   │ Description de l'hypothèse         │ État │
+└──────┴────────────────────────────────────┴──────┘
+```
+
+**Règles de remplissage:**
+- Priorité : 
+  • 🔴 Haute priorité
+  • 🟡 Moyenne priorité
+  • 🟢 Basse priorité
+  • ⚫ Abandonnée
+- ID : Format Hx (H pour Hypothèse, x numéro séquentiel)
+- Description : Claire et détaillée sur max 2 lignes
+
+### 1.4 Investigation
+```
+    INVESTIGATION
+    ├── Action 1 [État] [Résultat]
+    │   ├── Sous-action [État] [Résultat]
+    │   └── Observations détaillées
+    │
+    └── Action 2 [État] [Résultat]
+        └── Détails et métriques
+```
+
+**Règles de remplissage:**
+- Structure arborescente claire
+- États sur chaque action : [TODO|WIP|DONE|STOP|SKIP]
+- Résultats quand applicable : [✅|❌|🚧|🔲|🚫]
+- Indentation respectée
+- Observations factuelles et mesurables
+
+### 1.5 Conclusions et Solutions
+```
+    ────────────────────────────────────────────
+    CONCLUSION INVESTIGATION: Statut final ✅|❌
+    • Points clés de conclusion
+    ────────────────────────────────────────────
+
+    SOLUTIONS PROPOSÉES
+    ├── Solution 1 [État]
+    │   ├── Action [État] [Résultat]
+    │   └── Tests [État] [Résultat]
+    └── Solution 2 [État]
+```
+
+**Règles de remplissage:**
+- Conclusion claire et factuelle
+- Solutions hiérarchisées et détaillées
+- États et résultats sur chaque élément
+- Structure cohérente avec l'investigation
+
+### 1.6 Métriques
+
+#### 1.6.1 Table des Métriques
+```
+┌────────────────┬────────────┬────────────┐
+│ MÉTRIQUES      │ AVANT      │ APRÈS      │
+├────────────────┼────────────┼────────────┤
+│ Métrique 1     │ Valeur     │ Valeur     │
+└────────────────┴────────────┴────────────┘
+```
+
+#### 1.6.2 Règles de Remplissage
+- Métriques quantifiables uniquement
+- Valeurs précises avec unités
+- Comparaison avant/après quand disponible
+
+## 2. Règles Générales
+
+### 2.1 États de Progression
+
+#### 2.1.1 Types d'États
+```
+[TODO] À faire
+[WIP]  En cours
+[DONE] Terminé
+[STOP] Bloqué
+[SKIP] Abandonné
+```
+
+### 2.2 Marqueurs de Résultat
+
+#### 2.2.1 Types de Marqueurs
+```
+✅ Succès/Validé
+❌ Échec/Invalidé
+🚧 En cours
+🔲 Non commencé
+🚫 Bloqué
+```
+
+### 2.3 Bonnes Pratiques
+
+#### 2.3.1 Principes Fondamentaux
+1. **Clarté**
+   - Une action = une ligne
+   - États systématiques
+   - Descriptions factuelles
+
+2. **Structure**
+   - Respecter l'indentation
+   - Suivre la hiérarchie logique
+   - Maintenir la cohérence visuelle
+
+3. **Contenu**
+   - Pas de considérations temporelles
+   - Pas de considération de charge, d'effectif, de gestion d'équipe
+   - Focus sur les faits et mesures
+   - Documentation précise et référencée
+
+4. **Mise à jour**
+   - États à jour en permanence
+   - Conclusions documentées
+   - Métriques actualisées
+
+## 3. Utilisation
+
+1. Créer la structure initiale avec problème
+2. Ajouter les documents associés
+3. Formuler les hypothèses avec priorités
+4. Documenter investigations au fur et à mesure
+5. Maintenir états et résultats à jour
+6. Conclure chaque hypothèse clairement
+7. Documenter solutions et résultats
+
+La force de ce template réside dans sa capacité à :
+- Structurer la pensée
+- Faciliter le suivi
+- Permettre la reprise par d'autres
+- Documenter les décisions
+
+
+EXEMPLE COMPLET D'APPLICATION DE LA METHODOLOGIE et création d'un document de suivi :
+
+
+# 🔍 DEBUG #P156
+
+┌──────┬────────────────────────────────────────────────────────┬──────┬──────────────┐
+│ ID   │ PROBLÈME INITIAL                                       │ État │ Résolution   │
+├──────┼────────────────────────────────────────────────────────┼──────┼──────────────┤
+│ P156 │ Erreur 404 sur /api/v1/prompts avec filtres           │ WIP  │ 2/3 étapes   │
+└──────┴────────────────────────────────────────────────────────┴──────┴──────────────┘
+
+DOCUMENTS ASSOCIÉS
+• Logs système: /var/log/api/errors.log
+• Configuration FastAPI: /src/config/api.py
+• Schema BDD: /src/database/schema.sql
+• Tests API: /tests/api/prompts_test.py
+
+RÉSUMÉ SITUATION
+• Route /api/v1/prompts inaccessible avec filtres spécifiques
+• Base de données partiellement initialisée
+• Impact sur fonctionnalités de filtrage des prompts
+• Services dépendants affectés par l'indisponibilité
+
+🔴
+┌──────┬────────────────────────────────────────────────────────┬──────┐
+│ ID   │ HYPOTHÈSE #1: INITIALISATION BDD                      │ État │
+├──────┼────────────────────────────────────────────────────────┼──────┤
+│ H1   │ Tables et données de référence non initialisées       │ DONE │
+│      │ correctement lors du démarrage                        │      │
+└──────┴────────────────────────────────────────────────────────┴──────┘
+
+    INVESTIGATION
+    ├── Vérification structure BDD [DONE]
+    │   ├── Test existence tables [DONE] ❌
+    │   │   └── Tables enum manquantes:
+    │   │       • prompt_types
+    │   │       • prompt_status
+    │   │
+    │   └── Analyse séquence création [DONE] ✅
+    │       • Ordre incorrect dans database.py
+    │       • Dépendances non respectées
+    │
+    └── Validation données [DONE]
+        ├── Test données référence [DONE] ❌
+        │   • Types prompts non initialisés
+        │   • Statuts manquants
+        └── Vérification contraintes [DONE] ✅
+            • Contraintes FK en place
+            • CHECK constraints valides
+
+   ───────────────────────────────────────────────────────────────────
+    CONCLUSION INVESTIGATION: Hypothèse validée ✅
+    • Problème d'ordre d'initialisation confirmé
+    • Impact direct sur fonctionnement des filtres
+    • Nécessité de revoir séquence démarrage
+   ───────────────────────────────────────────────────────────────────
+    
+    SOLUTIONS PROPOSÉES
+    ├── Solution 1: Correction ordre init [DONE]
+    │   ├── Modification database.py [DONE] ✅
+    │   │   • Tables enum créées en premier
+    │   │   • Ajout vérification dépendances
+    │   └── Tests initialisation [DONE] ✅
+    │       • Séquence création OK
+    │       • Données référence présentes
+    │
+    └── Solution 2: Migration automatisée [TODO]
+        • Script vérification intégrité
+        • Procédure mise à jour données
+
+🟡
+┌──────┬────────────────────────────────────────────────────────┬──────┐
+│ ID   │ HYPOTHÈSE #2: CONFIGURATION FASTAPI                   │ État │
+├──────┼────────────────────────────────────────────────────────┼──────┤
+│ H2   │ Problème de configuration du routage des endpoints    │ WIP  │
+└──────┴────────────────────────────────────────────────────────┴──────┘
+
+    INVESTIGATION
+    ├── Analyse routes [DONE]
+    │   ├── Vérification configuration [DONE] ✅
+    │   │   • Routes définies correctement
+    │   │   • Préfixes API configurés
+    │   └── Test autres endpoints [DONE] ✅
+    │       • /health répond 200
+    │       • /api/v1/ accessible
+    │
+    └── Analyse filtres [WIP]
+        ├── Test paramètres [WIP] 🚧
+        │   • archived=false OK
+        │   • type=analyse ❌
+        └── Validation query params [TODO]
+
+    CONCLUSION INVESTIGATION: En cours 🚧
+    • Configuration de base correcte
+    • Problème spécifique aux filtres
+    • Investigation filtres à poursuivre
+
+    SOLUTIONS PROPOSÉES
+    └── Solution 1: Révision handlers [WIP]
+        ├── Refactoring validation [WIP]
+        └── Tests unitaires params [TODO]
+
+⚫
+┌──────┬────────────────────────────────────────────────────────┬──────┐
+│ ID   │ HYPOTHÈSE #3: MAPPING TYPE ENUM                       │ État │
+├──────┼────────────────────────────────────────────────────────┼──────┤
+│ H3   │ Problème de mapping entre enum Python et BDD          │ SKIP │
+└──────┴────────────────────────────────────────────────────────┴──────┘
+
+    Investigation non démarrée - Priorité plus faible
+
+## 📊 Métriques Impact
+
+┌────────────────┬────────────┬────────────┐
+│ MÉTRIQUES      │ AVANT      │ APRÈS      │
+├────────────────┼────────────┼────────────┤
+│ Temps réponse  │ Timeout    │ 200ms      │
+│ % Erreurs      │ 100%       │ 15%        │
+│ Tables valides │ 10/15      │ 15/15      │
+└────────────────┴────────────┴────────────┘

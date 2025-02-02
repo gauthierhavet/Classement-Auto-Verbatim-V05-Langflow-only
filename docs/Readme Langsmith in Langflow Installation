@@ -1,0 +1,15 @@
+LangSmith
+LangSmith is a full-lifecycle DevOps service from LangChain that provides monitoring and observability. To integrate with Langflow, just add your LangChain API key as a Langflow environment variable and you are good to go!
+
+Step-by-step Configuration
+Obtain your LangChain API key from https://smith.langchain.com
+Add the following keys to Langflow .env file:
+LANGCHAIN_API_KEY="your-api-key"LANGCHAIN_PROJECT="your-project-name"
+
+or export the environment variables in your terminal:
+
+export LANGCHAIN_API_KEY="your-api-key"export LANGCHAIN_PROJECT="your-project-name"
+
+Restart Langflow using langflow run --env-file .env
+Run a project in Langflow.
+View the Langsmith dashboard for monitoring and observability.
