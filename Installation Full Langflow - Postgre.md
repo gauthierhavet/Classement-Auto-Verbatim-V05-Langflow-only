@@ -1,3 +1,40 @@
+## **Préparation Initiale**
+
+Avant de commencer, créez un dossier GitHub vide (scratch) qui servira de base pour votre projet. Ce dossier sera utilisé comme point de départ pour l'installation avec Docker. Vous pouvez le créer simplement avec :
+
+```bash
+mkdir mon-projet-langflow
+cd mon-projet-langflow
+
+### **Création du Dépôt GitHub**
+
+Après avoir créé le dossier local, créez un nouveau repository sur GitHub :
+
+1. Connectez-vous à votre compte GitHub
+2. Cliquez sur "New Repository"
+3. Donnez un nom au projet (par exemple `mon-projet-langflow`)
+4. Sélectionnez "Private" ou "Public" selon vos besoins
+5. Ne cochez pas "Initialize this repository with a README"
+6. Créez le dépôt
+
+Ensuite, connectez votre projet local au dépôt GitHub :
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/votre-utilisateur/mon-projet-langflow.git
+git push -u origin main
+```
+
+Cela établit la connexion avec le dépôt distant.
+
+```
+
+Ce dossier initial est essentiel car il permettra d'organiser tous les fichiers nécessaires à l'installation et à la configuration.
+
+
 Merci pour ces précisions ! Voici une **méthode complète et simplifiée** pour installer Langflow avec PostgreSQL, adaptée à vos besoins (débutant, mono-utilisateur, prêt pour production légère). Je vais tout détailler en étapes claires.
 
 ---
