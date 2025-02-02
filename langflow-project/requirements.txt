@@ -1,0 +1,3 @@
+langflow
+psycopg2
+python-dotenv  # Pour charger les variables d'environnement depuis .env
