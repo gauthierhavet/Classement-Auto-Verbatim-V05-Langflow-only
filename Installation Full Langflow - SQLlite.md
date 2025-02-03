@@ -73,6 +73,7 @@ LANGFLOW_CONFIG_DIR=/data
 LANGFLOW_SAVE_DB_IN_CONFIG_DIR=true
 LANGFUSE_SECRET_KEY=sk-lf-...
 LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_HOST="https://cloud.langfuse.com"
 ```
 
 **Important** : Remplacez les valeurs de `LANGFUSE_SECRET_KEY` et `LANGFUSE_PUBLIC_KEY` par vos propres valeurs.
@@ -97,6 +98,7 @@ services:
       # Langfuse (si nécessaire)
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
+      - LANGFUSE_HOST=${LANGFUSE_HOST}
     networks:
       - langflow-network
     env_file:

@@ -18,7 +18,7 @@ services:
       # Langfuse (si nécessaire)
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
-      - LANGFUSE_HOST="https://cloud.langfuse.com"
+      - LANGFUSE_HOST=${LANGFUSE_HOST}
     networks:
       - langflow-network
     env_file:
