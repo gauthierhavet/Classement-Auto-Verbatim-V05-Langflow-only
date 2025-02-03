@@ -1,5 +1,4 @@
-
-,## **Préparation Initiale**
+## **Préparation Initiale**
 
 Avant de commencer, assurez-vous d'avoir Docker et Docker Compose installés sur votre système.
 
@@ -49,9 +48,8 @@ langflow-project/
 │   ├── components/       # Composants personnalisés
 │   └── ...
 ├── data/                 # Données persistantes
-│   └── postgres/         # Base de données PostgreSQL
+│   └── sqlite/         # Base de données SQLite
 ├── scripts/              # Utilitaires (optionnel)
-│   ├── backup_db.sh      # Sauvegarde manuelle de la BDD
 │   └── init_db.sh        # Initialisation (optionnel) init_db.sh sert uniquement à pré-remplir la base avec quelques tables ou données initiales si besoin.
 └── docs/                 # Documentation (optionnel)
     └── API_DOCS.md       # Documentation générée via Swagger (optionnel)
@@ -64,21 +62,16 @@ langflow-project/
 Créez un fichier `.env` à la racine du projet avec le contenu suivant :
 
 ```bash
-# Secrets (à personnaliser)
-POSTGRES_USER=admin
-POSTGRES_PASSWORD=UnMotDePasseSuperSecurise123!
-POSTGRES_DB=langflow_db
-
 # Langflow
 LANGFLOW_HOST=0.0.0.0
-LANGFLOW_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+LANGFLOW_DATABASE_URL=sqlite:///./data/sqlite/langflow.db
 
 # Langfuse (monitoring, optionnel)
 LANGFUSE_SECRET_KEY=sk-lf-...
 LANGFUSE_PUBLIC_KEY=pk-lf-...
 ```
 
-**Important** : Remplacez les valeurs de `POSTGRES_USER`, `POSTGRES_PASSWORD`, `LANGFUSE_SECRET_KEY` et `LANGFUSE_PUBLIC_KEY` par vos propres valeurs.
+**Important** : Remplacez les valeurs de `LANGFUSE_SECRET_KEY` et `LANGFUSE_PUBLIC_KEY` par vos propres valeurs.
 
 ### **1.2 Fichier `docker-compose.yml`**
 
@@ -100,25 +93,6 @@ services:
       # Langfuse (si nécessaire)
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - langflow-network
-
-  db:
-    image: postgres:15-alpine
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data:rw
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - langflow-network
 
@@ -188,7 +162,6 @@ Le fichier `requirements.txt` doit contenir les dépendances Python nécessaires
 
 ```text
 langflow>=1.1.3
-psycopg2-binary
 python-dotenv
 ```
 
@@ -199,7 +172,7 @@ python-dotenv
 Si vous n'avez pas déjà créé les fichiers nécessaires, vous pouvez les créer avec les commandes suivantes :
 
 ```bash
-mkdir -p langflow-project/{app,data/postgres,scripts,docs}
+mkdir -p langflow-project/{app,data/sqlite,scripts,docs}
 cd langflow-project
 touch .env docker-compose.yml Dockerfile requirements.txt
 ```
@@ -212,9 +185,9 @@ Construisez et démarrez les conteneurs Docker avec la commande suivante :
 docker-compose up --build -d
 ```
 
-Cette commande construira l'image Docker de Langflow en utilisant le `Dockerfile`, téléchargera l'image PostgreSQL et démarrera les conteneurs pour Langflow et la base de données.
+Cette commande construira l'image Docker de Langflow en utilisant le `Dockerfile` et démarrera le conteneur pour Langflow.
 
-**Note :** La base de données PostgreSQL sera créée automatiquement dans le répertoire `./data/postgres` lors du premier démarrage. Vous n'avez pas besoin de créer manuellement un fichier de base de données.
+**Note :** La base de données SQLite sera créée automatiquement dans le répertoire `./data/sqlite` lors du premier démarrage.
 
 Accédez à Langflow : [http://localhost:7860](http://localhost:7860)
 
@@ -235,35 +208,15 @@ touch app/components/custom/my_component.py
 
 Vous pouvez générer automatiquement une documentation API avec Swagger.
 
-*   Accédez à la documentation : [http://localhost:7860/docs](http://localhost:7860/docs)
+-   Accédez à la documentation : [http://localhost:7860/docs](http://localhost:7860/docs)
 
 ## **Étape 4 : Gestion des Données**
 
-### **4.1 Sauvegarde de la base de données PostgreSQL**
+###  **4.1 Gestion de la base de données SQLite**
 
-GitHub ne sauvegarde **pas** automatiquement les données des conteneurs !
+Pour inspecter ou modifier la base SQLite, vous pouvez utiliser des outils comme DB Browser for SQLite.
 
-Pour sauvegarder la base de données PostgreSQL, vous pouvez utiliser un script comme `scripts/backup_db.sh` :
-
-```bash
-#!/bin/bash
-docker-compose exec db pg_dump -U ${POSTGRES_USER} ${POSTGRES_DB} > backup_$(date +%Y-%m-%d).sql
-```
-
-Exécutez-le avec :
-
-```bash
-chmod +x scripts/backup_db.sh
-./scripts/backup_db.sh
-```
-
-### **4.2 Restauration de la BDD**
-
-Pour restaurer la base de données PostgreSQL à partir d'une sauvegarde :
-
-```bash
-cat backup_2023-10-01.sql | docker-compose exec -T db psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} 
-```
+**Note** : Par défaut, la base SQLite est supprimée si Langflow est désinstallé. Pour éviter cela, utilisez `LANGFLOW_SAVE_DB_IN_CONFIG_DIR=true`.
 
 ## **Étape 5 : Sécurité Basique**
 
@@ -312,14 +265,12 @@ docker-compose logs -f langflow
 | -------------------- | ---------------------------------------------- |
 | Démarrer/Stopper     | `docker-compose up -d` / `docker-compose down` |
 | Voir les logs        | `docker-compose logs -f`                      |
-| Accès à la BDD       | `docker-compose exec db psql -U admin -d langflow_db` |
-| Sauvegarder          | `./scripts/backup_db.sh`                      |
 | Redémarrer           | `docker-compose restart`                      |
 
 ## **FAQ pour Débutants**
 
-**Q** : *Où sont stockées les données de la base PostgreSQL ?*
-**R** : Dans `./data/postgres`. Ne supprimez pas ce dossier !
+**Q** : *Où sont stockées les données de la base SQLite ?*
+**R** : Dans `./data/sqlite`. Ne supprimez pas ce dossier !
 
 **Q** : *Comment ajouter une clé API externe ?*
 **R** : Ajoutez-la dans `.env` et référencez-la dans `docker-compose.yml`.
@@ -328,3 +279,56 @@ docker-compose logs -f langflow
 **R** : C’est l’outil standard pour gérer des applications multi-conteneurs simplement.
 
 Cette méthode couvre **100% de vos besoins actuels** tout en restant simple. Testez chaque étape, et adaptez-la progressivement ! 🚀
+
+## **Utilisation de PostgreSQL (optionnel)**
+
+Si vous souhaitez utiliser une base de données PostgreSQL au lieu de SQLite, vous pouvez suivre les étapes suivantes :
+
+1. Créez un fichier `.env` et définissez la variable `LANGFLOW_DATABASE_URL` avec l'URL de connexion à PostgreSQL (format : `postgresql://user:password@host:port/dbname`).
+2. Modifiez le fichier `docker-compose.yml` pour ajouter un service `db` pour PostgreSQL. Voici un exemple de configuration :
+
+    ```yaml
+    version: '3.8'
+
+    services:
+      langflow:
+        build: .
+        volumes:
+          - ./app:/app:rw
+        ports:
+          - "7860:7860"
+        environment:
+          - LANGFLOW_HOST=${LANGFLOW_HOST}
+          - DATABASE_URL=${LANGFLOW_DATABASE_URL}
+          # Langfuse (si nécessaire)
+          - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
+          - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
+        depends_on:
+          db:
+            condition: service_healthy
+        networks:
+          - langflow-network
+
+      db:
+        image: postgres:15-alpine
+        volumes:
+          - ./data/postgres:/var/lib/postgresql/data:rw
+        environment:
+          - POSTGRES_USER=admin
+          - POSTGRES_PASSWORD=UnMotDePasseSuperSecurise123!
+          - POSTGRES_DB=langflow_db
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+        networks:
+          - langflow-network
+
+    networks:
+      langflow-network:
+        driver: bridge
+    ```
+3. Exécutez Langflow avec `docker-compose up -d` pour démarrer les conteneurs Langflow et PostgreSQL.
+```
+<line_count>394</line_count>
