@@ -9,11 +9,23 @@ services:
     environment:
       - LANGFLOW_HOST=${LANGFLOW_HOST}
       - DATABASE_URL=${LANGFLOW_DATABASE_URL}
+
+      # Personnalisez le dossier de configuration
+      - LANGFLOW_CONFIG_DIR=/data
+      # Force le stockage de la DB dans ce dossier
+      - LANGFLOW_SAVE_DB_IN_CONFIG_DIR=true
+      
       # Langfuse (si nécessaire)
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
     networks:
       - langflow-network
+    env_file:
+      - .env
+
+volumes:
+  data:
+  app:
 
 networks:
   langflow-network:

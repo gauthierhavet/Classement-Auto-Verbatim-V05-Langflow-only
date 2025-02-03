@@ -35,6 +35,9 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     uv venv -p python3.11 && \
     uv pip install --system "langflow>=1.1.3"
 
+# Attribution des permissions sur le dossier de Langflow
+RUN chmod -R 777 /usr/local/lib/python3.12/site-packages/langflow
+
 # Création de l'utilisateur non-root avec permissions adaptées
 RUN useradd -m -d /app langflowuser && \
     chown -R langflowuser:langflowuser /app
