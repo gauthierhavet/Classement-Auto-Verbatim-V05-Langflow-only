@@ -1,34 +1,48 @@
-FROM python:3.9-slim
+# Utilise l'image officielle mise à jour de Langflow
+FROM langflowai/langflow:latest
 
-ENV PYTHONUNBUFFERED 1
-ENV PIP_DEFAULT_TIMEOUT=100
+ENV PYTHONUNBUFFERED=1
+ENV LANGFLOW_HOST=0.0.0.0
+ENV LANGFLOW_PORT=7860
 
-# Crée un utilisateur non-root
-RUN useradd -m langflowuser && \
-    mkdir /app && \
-    chown langflowuser:langflowuser /app
+# Configuration spécifique pour les dépendances
+ENV UV_HTTP_TIMEOUT=300
+ENV UV_CACHE_DIR=/app/cache
 
 WORKDIR /app
 
-# Installe les dépendances système et les certificats SSL
+# Passage temporaire en root pour les installations
+USER root
+
+# Installation des dépendances système critiques
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
+    libgomp1 \
+    libssl-dev \
     ca-certificates \
-    && update-ca-certificates \
+    curl \
+    build-essential \
+    gcc \
+    python3-dev \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure pip pour utiliser des miroirs alternatifs et augmente la tolérance aux erreurs
-RUN pip install --upgrade pip && \
-    pip config set global.timeout 100 && \
-    pip config set global.retries 10
+# Installation de lz4 en premier
+RUN pip install --no-cache-dir lz4==4.3.2
 
-# Copie et installation des dépendances Python avec des options de robustesse
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org
+# Configuration optimisée de UV et installation de langflow
+ENV PATH="/root/.local/bin:/root/.cargo/bin:${PATH}"
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    uv venv -p python3.11 && \
+    uv pip install --system "langflow>=1.1.3"
 
+# Création de l'utilisateur non-root avec permissions adaptées
+RUN useradd -m -d /app langflowuser && \
+    chown -R langflowuser:langflowuser /app
+
+# Passage à l'utilisateur dédié
 USER langflowuser
 
 EXPOSE 7860
 
-CMD ["langflow", "run"]
+# Commande de démarrage avec rechargement automatique
+CMD ["langflow", "run", "--host", "0.0.0.0", "--port", "7860", "--log-level", "info"]
